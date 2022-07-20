@@ -3,7 +3,7 @@ Pequeno projeto que consome a api de imagens do pixabay.
 
 ## :camera_flash: ScreenShots
 
-<img src="https://user-images.githubusercontent.com/26637908/180012662-d148e795-16b6-4373-b73f-06188e6bdef6.png">&emsp;
+<img src="https://user-images.githubusercontent.com/26637908/180012662-d148e795-16b6-4373-b73f-06188e6bdef6.png" width="260">&emsp;
 
 ## :bulb: Motivação
 
