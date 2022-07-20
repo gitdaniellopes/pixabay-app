@@ -16,17 +16,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.pixabayapp.R
+import br.com.pixabayapp.ui.home.HomeEvent
 
 @Composable
 fun SearchBar(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    query: String,
+    onEvent: (HomeEvent) -> Unit,
+    getImages: (String) -> Unit,
 ) {
     Row(modifier = Modifier.fillMaxWidth()) {
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = query,
+            onValueChange = { onEvent(HomeEvent.EnteredImage(it)) },
             trailingIcon = {
-                IconButton(onClick = { }) {
+                IconButton(onClick = {
+                    getImages(query)
+                }) {
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = null
@@ -39,10 +45,4 @@ fun SearchBar(
                 .heightIn(min = 56.dp)
         )
     }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun SearchBarPreview() {
-    SearchBar(Modifier.padding(8.dp))
 }

@@ -6,30 +6,56 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import br.com.pixabayapp.domain.model.Photo
 import br.com.pixabayapp.ui.home.components.ImageItem
 import br.com.pixabayapp.ui.home.components.SearchBar
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel(),
+) {
+
+    val state = viewModel.state
+    val eventFlow = viewModel.eventFlow
+    val scaffoldState = rememberScaffoldState()
+
+    LaunchedEffect(scaffoldState.snackbarHostState) {
+        eventFlow.collect { event ->
+            when (event) {
+                is HomeViewModel.UIEvent.ShowSnackBar -> event.message?.let {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = it
+                    )
+                }
+            }
+        }
+    }
+
     Scaffold(
+        modifier = modifier.fillMaxSize(),
+        scaffoldState = scaffoldState,
         topBar = {
-            SearchBar(modifier = Modifier.padding(8.dp))
+            SearchBar(
+                modifier = Modifier.padding(8.dp),
+                query = state.query,
+                onEvent = { viewModel.onEvent(it) },
+                getImages = { query -> viewModel.fetch(query) }
+            )
         },
         content = { paddingValues ->
             HomeContent(
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier.padding(paddingValues),
+                isLoading = state.isLoading,
+                photos = state.photo,
             )
         }
     )
@@ -38,33 +64,30 @@ fun HomeScreen(navController: NavHostController) {
 @Composable
 fun HomeContent(
     modifier: Modifier = Modifier,
-    photo: List<Photo> = emptyList()
+    photos: List<Photo>,
+    isLoading: Boolean = false,
 ) {
     Surface(
         color = MaterialTheme.colors.surface,
         modifier = modifier.padding(top = 8.dp, start = 4.dp, end = 4.dp)
     ) {
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(80.dp),
+            modifier = modifier.fillMaxSize(),
+            columns = GridCells.Fixed(3),
             content = {
-                items(100) {
+                items(photos) { photo ->
                     ImageItem(
-                        item = Photo(
-                            previewUrls = listOf(
-                                "https://imagens-cdn.canalrural.com.br/2019/11/frutas-hortalic%CC%A7as.jpeg",
-                                "https://www.portalsaudenoar.com.br/wp-content/uploads/2015/10/Frutas.jpg",
-                                "https://s2.glbimg.com/WtZG8KPi9LK10sLTo2oZO7xwC5s=/512x320/smart/e.glbimg.com/og/ed/f/original/2015/02/05/fruit-333.jpg"
-                            )
-                        ),
+                        item = photo
                     )
                 }
             }
         )
+        if (isLoading) FullScreenLoading()
     }
 }
 
 @Composable
-fun FullScreenLoading() {
+private fun FullScreenLoading() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -72,13 +95,4 @@ fun FullScreenLoading() {
     ) {
         CircularProgressIndicator()
     }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun HomeScreenPreview() {
-    val navController = rememberNavController()
-    HomeScreen(
-        navController = navController
-    )
 }
