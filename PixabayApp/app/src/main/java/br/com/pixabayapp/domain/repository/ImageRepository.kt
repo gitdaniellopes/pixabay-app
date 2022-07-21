@@ -1,10 +1,9 @@
 package br.com.pixabayapp.domain.repository
 
-import br.com.pixabayapp.data.source.ResultResource
+import androidx.paging.PagingSource
 import br.com.pixabayapp.domain.model.Photo
-import kotlinx.coroutines.flow.Flow
 
 interface ImageRepository {
 
-     fun getImages(imageQuery: String): Flow<ResultResource<List<Photo>>>
+    fun getImages(imageQuery: String): PagingSource<Int, Photo>
 }

@@ -11,5 +11,8 @@ interface PixabayApi {
     suspend fun getImages(
         @Query("q") query: String? = null,
         @Query("key") apiKey: String = BuildConfig.API_KEY,
+        @Query("safesearch") safeSearch: Boolean = true,
+        @Query("page") page: Int? = null,
+        @Query("per_page") per_page: Int? = null
     ): ImagesResponse
 }
