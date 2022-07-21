@@ -3,7 +3,6 @@ package br.com.pixabayapp.ui.home
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.Scaffold
@@ -88,17 +87,19 @@ fun HomeContent(
                 }
                 photos.apply {
                     when {
-                        loadState.append is LoadState.Loading -> {
-                            item { LoadingItem() }
+                        loadState.prepend is LoadState.Loading -> {
+                            item { LoadingView() }
                         }
-                        loadState.refresh is LoadState.Loading -> {
+//                        loadState.refresh is LoadState.Loading -> {
+//                            item { LoadingView() }
+//                        }
+                        loadState.append is LoadState.Loading -> {
                             item { LoadingView() }
                         }
                         loadState.refresh is LoadState.Error -> {
                             val loadStateError = photos.loadState.refresh as LoadState.Error
                             item {
                                 ErrorItem(
-                                    modifier = modifier.wrapContentWidth(),
                                     message = loadStateError.error.localizedMessage!!,
                                     onClickRetry = { retry() }
                                 )
@@ -108,7 +109,6 @@ fun HomeContent(
                             val loadStateError = photos.loadState.append as LoadState.Error
                             item {
                                 ErrorItem(
-                                    modifier = modifier.wrapContentWidth(),
                                     message = loadStateError.error.localizedMessage!!,
                                     onClickRetry = { retry() }
                                 )

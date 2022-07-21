@@ -15,19 +15,25 @@ import androidx.compose.ui.unit.dp
 fun LoadingView(
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = modifier
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            modifier = Modifier
+                .padding(12.dp)
+                .align(Alignment.Center)
+                .wrapContentWidth(Alignment.CenterHorizontally)
+        )
     }
 }
 
 @Composable
 fun LoadingItem() {
     CircularProgressIndicator(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(16.dp)
             .wrapContentWidth(Alignment.CenterHorizontally)
     )
